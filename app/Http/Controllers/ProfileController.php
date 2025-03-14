@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\UpdateEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class ProfileController extends Controller
 {
@@ -57,6 +59,10 @@ class ProfileController extends Controller
         $user->update([
             'email' => $request->new_email,
         ]);
+
+        Mail::to($user->email)->send(
+            new UpdateEmail($user)
+    );
 
         return redirect()->route('profile.show')->with('success', 'Email updated successfully!');
     }
